@@ -58,12 +58,6 @@ slider.setItems(items, autoScrollInterval = 3000)
 // Enable/disable swipe
 slider.enableSwipe(true)
 
-3. Error Placeholder (Optional)
-
-If an image fails to load, you can show a default placeholder by updating your adapter with:
-
-holder.binding.imageView.setImageResource(R.drawable.placeholder)
-
 🙌 Contribute
 
 Pull requests are welcome!
