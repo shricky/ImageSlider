@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 Then add the dependency in your app-level build.gradle:
 
 dependencies {
-    implementation 'com.github.shricky:ImageSlider:1.0.1'
+    implementation 'com.github.shricky:ImageSlider:v1.0.2'
 }
 
 
