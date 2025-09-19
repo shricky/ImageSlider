@@ -11,7 +11,6 @@ Supports images from **drawable, Uri, file path, URL, or Drawable object** with 
 - ✅ Auto-scroll with configurable time interval
 - ✅ Swipe enable/disable
 - ✅ Error placeholder image if loading fails
-- ✅ Works with **XML** layouts (no Jetpack Compose required)
 - ✅ Lightweight (no 3rd-party libraries)
 
 ---
