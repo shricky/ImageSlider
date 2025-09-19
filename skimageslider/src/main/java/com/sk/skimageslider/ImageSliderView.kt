@@ -19,36 +19,19 @@ class ImageSliderView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs) {
 
     private val viewPager = ViewPager2(context)
-    private val indicatorLayout = LinearLayout(context) // dots
     private val handler = Handler(Looper.getMainLooper())
-
-    private var autoScrollInterval: Long = 3000
+    private var autoScrollInterval: Long = 3000 // default 3 sec
     private var isAutoScrollEnabled = false
     private var isSwipeEnabled = true
 
-    private var activeDotColor: Int = Color.WHITE
-    private var inactiveDotColor: Int = Color.GRAY
+    // store customization values
     private var cornerRadius: Float = 0f
     private var shadeEnabled: Boolean = true
 
     private var runnable: Runnable? = null
 
     init {
-        val params = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT
-        )
-        addView(viewPager, params)
-
-        indicatorLayout.orientation = LinearLayout.HORIZONTAL
-        indicatorLayout.gravity = Gravity.CENTER
-        val indicatorParams = LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
-        )
-        indicatorParams.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-        indicatorParams.setMargins(0, 0, 0, 32)
-        addView(indicatorLayout, indicatorParams)
+        addView(viewPager, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
     }
 
     fun setItems(
@@ -56,15 +39,12 @@ class ImageSliderView @JvmOverloads constructor(
         defaultErrorImage: Int = R.drawable.ic_broken,
         onItemClick: ((SliderItem) -> Unit)? = null
     ) {
-        viewPager.adapter = SliderAdapter(items, defaultErrorImage, onItemClick)
-        setupIndicators(items.size)
+        val adapter = SliderAdapter(items, defaultErrorImage, onItemClick).apply {
+            setCornerRadius(cornerRadius)
+            setShadeEnabled(shadeEnabled)
+        }
+        viewPager.adapter = adapter
         setupSwipe()
-
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                updateIndicators(position)
-            }
-        })
     }
 
     fun setAutoScroll(interval: Long, enabled: Boolean) {
@@ -78,19 +58,14 @@ class ImageSliderView @JvmOverloads constructor(
         setupSwipe()
     }
 
-    fun setIndicatorColors(active: Int, inactive: Int) {
-        activeDotColor = active
-        inactiveDotColor = inactive
-    }
-
     fun setCornerRadius(radius: Float) {
         cornerRadius = radius
-        // Apply to ViewPager's children (CardView in item layout)
+        (viewPager.adapter as? SliderAdapter)?.setCornerRadius(radius)
     }
 
     fun setShadeEnabled(enabled: Boolean) {
         shadeEnabled = enabled
-        // handled in adapter (toggle background visibility)
+        (viewPager.adapter as? SliderAdapter)?.setShadeEnabled(enabled)
     }
 
     private fun setupSwipe() {
@@ -100,36 +75,6 @@ class ImageSliderView @JvmOverloads constructor(
             recyclerView.setOnTouchListener { _, _ -> !isSwipeEnabled }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun setupIndicators(count: Int) {
-        indicatorLayout.removeAllViews()
-        for (i in 0 until count) {
-            val dot = View(context)
-            val size = 16
-            val params = LinearLayout.LayoutParams(size, size)
-            params.setMargins(8, 0, 8, 0)
-            dot.layoutParams = params
-            dot.background = createDotDrawable(inactiveDotColor)
-            indicatorLayout.addView(dot)
-        }
-        updateIndicators(0)
-    }
-
-    private fun updateIndicators(position: Int) {
-        for (i in 0 until indicatorLayout.childCount) {
-            val dot = indicatorLayout.getChildAt(i)
-            dot.background =
-                if (i == position) createDotDrawable(activeDotColor)
-                else createDotDrawable(inactiveDotColor)
-        }
-    }
-
-    private fun createDotDrawable(color: Int): GradientDrawable {
-        return GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setColor(color)
         }
     }
 
@@ -157,7 +102,4 @@ class ImageSliderView @JvmOverloads constructor(
         stopAutoScroll()
     }
 }
-
-
-// Adapter
 
