@@ -65,6 +65,8 @@ slider.setAutoScroll(3000, enabled = true)
 slider.setCornerRadius(24f)
 slider.setShadeEnabled(false)
 
+// also can update colors of active dots
+
 🙌 Contribute
 
 Pull requests are welcome!
