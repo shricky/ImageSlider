@@ -58,6 +58,13 @@ slider.setItems(items, autoScrollInterval = 3000)
 // Enable/disable swipe
 slider.enableSwipe(true)
 
+//Enable auto scroll
+slider.setAutoScroll(3000, enabled = true)
+
+//add card corner and enable shade in title description
+slider.setCornerRadius(24f)
+slider.setShadeEnabled(false)
+
 🙌 Contribute
 
 Pull requests are welcome!
